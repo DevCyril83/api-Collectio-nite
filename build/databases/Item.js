@@ -2,14 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const { DataTypes } = require("sequelize");
 const sequelize = require(".");
-const Collection = sequelize.define("Collection", {
+const Item = sequelize.define("Item", {
     name: {
         type: DataTypes.STRING,
-        allowNull: false,
-    },
-    description: {
-        type: DataTypes.STRING,
-        allowNull: true
+        allowNull: false
     }
 });
-module.exports = Collection;
+module.exports = Item;
