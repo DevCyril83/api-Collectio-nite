@@ -4,6 +4,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require(".");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const Collection = require("./Collection");
 const User = sequelize.define("User", {
     name: {
         type: DataTypes.STRING,
@@ -24,4 +25,6 @@ const User = sequelize.define("User", {
         unique: true
     }
 });
+Collection.belongsToMany(User, { through: "user-collection" });
+User.belongsToMany(Collection, { through: "user-collection" });
 module.exports = User;

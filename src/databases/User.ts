@@ -4,6 +4,9 @@ const sequelize = require(".");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
+const Collection = require("./Collection")
+
+
 
 const User = sequelize.define("User",{
     name : {
@@ -26,6 +29,7 @@ const User = sequelize.define("User",{
     }
 
 });
-
+Collection.belongsToMany(User, {through:"user-collection"});
+User.belongsToMany(Collection, {through:"user-collection"});
 
 module.exports = User ;
