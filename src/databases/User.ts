@@ -1,5 +1,5 @@
-import { DataTypes} from "sequelize";
-import sequelize from ".";
+const { DataTypes } = require("sequelize");
+const sequelize = require(".");
 
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
@@ -27,5 +27,5 @@ const User = sequelize.define("User",{
 
 });
 
-    
 
+module.exports = User ;

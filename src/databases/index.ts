@@ -22,4 +22,8 @@ sequelize.authenticate()
 })
 .catch(error=>console.log(error));
 
+module.exports = sequelize;
+
+
+
 sequelize.sync({ force: false });
