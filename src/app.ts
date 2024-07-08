@@ -8,7 +8,6 @@ const app = express();
 
 const cors = require("cors");
 
-//Import modèle
 const Category = require("./databases/Category");
 const Collection = require("./databases/Collection");
 const Image = require("./databases/Image");
@@ -182,3 +181,5 @@ app.put("/category",async (request,reponse)=>{
 
     reponse.json("Category :" + category + "has been modified");
 })
+
+

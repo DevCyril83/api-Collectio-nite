@@ -5,7 +5,6 @@ const { Op } = require("sequelize");
 const express = require("express");
 const app = express();
 const cors = require("cors");
-//Import modèle
 const Category = require("./databases/Category");
 const Collection = require("./databases/Collection");
 const Image = require("./databases/Image");
