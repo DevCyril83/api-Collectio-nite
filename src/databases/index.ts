@@ -2,14 +2,14 @@ import { Sequelize, DataTypes } from "sequelize";
 
 import { readFileSync } from "node:fs";
 
-const password = readFileSync("../password.txt",
+const credential = JSON.parse(readFileSync("../credential.json",
     {encoding : "utf8"}
-)
+)) 
 
 const login = {
-    database : "collectio-nite",
-    username : "cyril",
-    password : password
+    database : credential.dbName,
+    username : credential.username,
+    password : credential.password
 }
 
 export const sequelize = new Sequelize(login.database, login.username, login.password,{
