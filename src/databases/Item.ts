@@ -10,7 +10,7 @@ const Item = sequelize.define("Item",{
     }
 })
 
-Item.belongsToMany(Category, {through : "collection-category"});
-Category.belongsToMany(Item, {through : "collection-category"});
+Item.belongsToMany(Category, {through : "Item-category"});
+Category.belongsToMany(Item, {through : "Item-category"});
 
 module.exports = Item ; 

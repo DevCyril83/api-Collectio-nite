@@ -182,4 +182,76 @@ app.put("/category",async (request,reponse)=>{
     reponse.json("Category :" + category + "has been modified");
 })
 
+//Item
 
+//GET Items
+app.get("/items", async (request,reponse)=>{
+    const items = await Item.findAll()
+
+    .catch(error=>{console.log(error)});
+
+    reponse.status(200).json(items)
+})
+
+//GET Item by id
+app.get("item/:id",async (request,reponse)=>{
+    const itemId = request.params.id;
+
+    const item = await Item.findByPk(itemId)
+    .catch(error=>{console.log(error)});
+
+    reponse.status(200).json(item)
+});
+
+//DELETE Item
+app.delete("/item/:id", async (request, reponse)=>{
+    const itemId = request.params.id;
+    const item = Item.findByPk(itemId);
+    
+    await Item.destroy(item)
+    .catch(error=>{console.log(error)});
+})
+
+//POST item 
+app.post("item",async (request,reponse)=>{
+    const modification = request.body;
+
+    const item = await Item.create({
+        name : modification.name
+    })
+    .catch(error=>{console.log(error)})
+    reponse.status(200).json(item)
+})
+
+//UPDATE Item
+app.put("item",async (request,reponse)=>{
+    const modification = request.body;
+
+    const item = Item.findAll({
+        where : {
+            id : modification.id
+        }
+    })
+    .catch(error=>{console.log(error)});
+    
+    item.name = modification.name;
+
+    await item.save()
+    .catch(error=>{console.log(error)});
+
+    reponse.status(200).json(item + "has been modified")
+
+})
+
+//GET Item by category
+app.get("/item/category/:categoryId", async (request , reponse)=>{
+    const categoryId = request.params.categoryId;
+
+    const item = await Item.findAll({
+        where : {
+            CategoryId : categoryId
+        }
+    })
+    .catch(error=>{console.log(error)});
+    reponse.status(200).json(item)
+});
