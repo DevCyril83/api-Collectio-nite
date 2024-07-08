@@ -1,16 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sequelize_1 = require("sequelize");
+const { DataTypes } = require("sequelize");
+const sequelize = require(".");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const Collection = require("./Collection");
 const User = sequelize.define("User", {
     name: {
-        type: sequelize_1.DataTypes.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
         unique: true
     },
     password: {
-        type: sequelize_1.DataTypes.STRING,
+        type: DataTypes.STRING,
         async set(value) {
             this.setDataValue("password", bcrypt.hashSync(value, saltRounds));
         },
@@ -18,8 +20,11 @@ const User = sequelize.define("User", {
         unique: true
     },
     email: {
-        type: sequelize_1.DataTypes.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
         unique: true
     }
 });
+Collection.belongsToMany(User, { through: "user-collection" });
+User.belongsToMany(Collection, { through: "user-collection" });
+module.exports = User;

@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const { DataTypes } = require("sequelize");
 const sequelize = require(".");
-const Category = sequelize.define("Category", {
+const Item = sequelize.define("Item", {
     name: {
         type: DataTypes.STRING,
-        allowNull: false,
-    },
+        allowNull: false
+    }
 });
-module.exports = Category;
+module.exports = Item;

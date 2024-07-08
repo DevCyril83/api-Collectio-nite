@@ -3,12 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sequelize = void 0;
 const sequelize_1 = require("sequelize");
 const node_fs_1 = require("node:fs");
-const credential = JSON.parse((0, node_fs_1.readFileSync)("../credential.json", { encoding: "utf8" }));
-console.log(credential);
+const password = (0, node_fs_1.readFileSync)("../password.txt", { encoding: "utf8" });
 const login = {
-    database: credential.dbName,
-    username: credential.username,
-    password: credential.password
+    database: "collectio-nite",
+    username: "cyril",
+    password: password
 };
 exports.sequelize = new sequelize_1.Sequelize(login.database, login.username, login.password, {
     host: "localhost",
