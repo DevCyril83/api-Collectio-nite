@@ -7,6 +7,7 @@ const express = require("express");
 const app = express();
 
 const cors = require("cors");
+const bcrypt = require("bcrypt")
 
 const Category = require("./databases/Category");
 const Collection = require("./databases/Collection");
@@ -255,3 +256,117 @@ app.get("/item/category/:categoryId", async (request , reponse)=>{
     .catch(error=>{console.log(error)});
     reponse.status(200).json(item)
 });
+
+//User
+
+//GET USERS
+app.get("/users",async (request,reponse)=>{
+
+    const users = await User.findAll()
+    .catch(error=>{console.log(error)});
+
+    reponse.status(200).json(users);
+})
+
+//GET user by id
+
+app.get("/user/:id",async (request,reponse)=>{
+    const user = await User.findByPk(request.params.id)
+    .catch(error=>{console.log(error)});
+    reponse.status(200).json(user);
+})
+
+//Post User SignUp
+app.post("/user/signup", async (request,reponse)=>{
+    const signUpForm = request.body;
+    const user = await User.create({
+        name : signUpForm.name,
+        email : signUpForm.email,
+        password : signUpForm.password
+    })
+    .catch(error=>{console.log(error)});
+    reponse.status(200).json(user);
+})
+//Post User SignIn
+app.post("user/signin", async (request,reponse)=>{
+    const signInForm = request.body;
+
+    const user = await User.findOne({
+        where : {
+            email : signInForm.email
+        }
+    }).catch(error=>{console.log(error)});
+
+    const isPasswordValid = await bcrypt.compare(signInForm.password, user.password)
+    .catch(error=>{console.log(error)})
+
+    if(isPasswordValid){
+        return reponse.status(200).json("connected");
+    }else{
+        reponse.status(401).json("Identifiant invalid")
+    }
+})
+
+//UPDATE User
+
+app.put("/user", async (request,reponse)=>{
+    const modification = request.body;
+
+    const user = await User.findOne({
+        where : {
+            email : modification.email
+        }
+    })
+    .catch(error=>{console.log(error)});
+
+    user.email = modification.email;
+    user.name = modification.name;
+    user.password = modification.password;
+    await user.save()
+    .catch(error=>{console.log(error)})
+    
+    reponse.status(200).json("User has been modified" + user)
+})
+
+//Image
+
+//GET Image by id
+app.get("/image/:id", async (request,reponse)=>{
+    const imageId = request.params.categoryId;
+
+    const image = await Item.findByPk(imageId)
+    .catch(error=>{console.log(error)});
+
+    reponse.status(200).json(image);
+});
+
+//POST Image
+app.post("/image", async (request,reponse)=>{
+    const imageBody = request.body;
+
+    const image = await Image.create({
+        url : imageBody.url,
+        description : imageBody.url,
+        auteur : imageBody.auteur
+    })
+    .catch(error=>{console.log(error)})
+
+    reponse.status(200).json(image)
+})
+
+//GET User image
+app.get("/image/:userId", async (request,reponse)=>{
+    const userId = request.params.userId;
+
+    const user = await User.findByPk(userId)
+    .catch(error =>{console.log(error)});
+
+    const image = await Image.findAll({
+        where : {
+            id : user.ImageId
+        }
+    });
+    reponse.status(200).json(image);
+})
+
+
