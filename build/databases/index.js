@@ -4,7 +4,6 @@ exports.sequelize = void 0;
 const sequelize_1 = require("sequelize");
 const node_fs_1 = require("node:fs");
 const credential = JSON.parse((0, node_fs_1.readFileSync)("../credential.json", { encoding: "utf8" }));
-console.log(credential);
 const login = {
     database: credential.dbName,
     username: credential.username,
