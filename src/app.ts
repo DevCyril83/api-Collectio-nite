@@ -14,6 +14,8 @@ const Collection = require("./databases/Collection");
 const Image = require("./databases/Image");
 const Item = require("./databases/Item");
 const User = require("./databases/User");
+const ItemCategory = require("./databases/User");
+
 
 app.use(cors());
 app.use(express.json());
@@ -51,10 +53,14 @@ app.delete("/collection/:id", async (request,reponse)=>{
     const collection = Collection.findByPk(collectionId)
     .catch(error=>{console.log(error)});
 
-    await Collection.destroy(collection)
+    await Collection.destroy({
+        where : {
+            id : collectionId
+        }
+    })
     .catch(error=>{console.log(error)});
 
-    reponse.status(200).json(collection);
+    reponse.status(200).json("collection has been deleted");
 })
 
 //Update Collection
@@ -86,8 +92,9 @@ app.get("/collection/:id", async (request,reponse)=>{
 });
 
 //GET Collection by search
-app.get("/product/search/:input", async (request,reponse)=>{
+app.get("/collection/search/:input", async (request,reponse)=>{
     const search = request.params.input;
+    console.log(search)
     const collection = await Collection.findAll({
         where : {
             name : {[Op.like]: "%"+search+"%"}
@@ -114,7 +121,7 @@ app.get("/collection/category/:categoryId" , async (request,reponse)=>{
 
 //GET Categories
 
-app.get("categories",async (request, reponse)=>{
+app.get("/categories",async (request, reponse)=>{
     const categories = await Category.findAll()
     .catch(error=>{console.log(error)});
 
@@ -128,7 +135,7 @@ app.get("/category/:id", async (request,reponse)=>{
     .catch(error=>{console.log(error)});
 
     reponse.status(200).json(category)
-})
+});
 
 //GET Category by search 
 
@@ -141,7 +148,7 @@ app.get("/category/search/:input", async (request,reponse)=>{
     })
     .catch(error=>{console.log(error)});
     reponse.json(category)
-})
+});
 
 //POST Category
 
@@ -152,7 +159,7 @@ app.post("/category", async (request,reponse)=>{
     })
     .catch(error=>{console.log(error)});
     reponse.status(200).json(category);
-})
+});
 
 //DELETE Category by id
 app.delete("/category/:id", async (request,reponse)=>{
@@ -163,25 +170,23 @@ app.delete("/category/:id", async (request,reponse)=>{
         }
     })
     .catch(error=>{console.log(error)});
-})
+    reponse.status(200).json("Category has been deleted")
+});
 
 //UPDATE Category
 app.put("/category",async (request,reponse)=>{
     const modification = request.body;
 
-    const category = await Category.findAll({
-        where : {
-            id : modification.id
-        }
-    })
+    const category = await Category.findByPk(modification.id)
     .catch(error=>{console.log(error)});
+    console.log(category)
 
     category.name = modification.name
     await category.save()
     .catch(error=>{console.log(error)});
 
-    reponse.json("Category :" + category + "has been modified");
-})
+    reponse.status(200).json("Category :" + category + "has been modified");
+});
 
 //Item
 
@@ -192,10 +197,10 @@ app.get("/items", async (request,reponse)=>{
     .catch(error=>{console.log(error)});
 
     reponse.status(200).json(items)
-})
+});
 
 //GET Item by id
-app.get("item/:id",async (request,reponse)=>{
+app.get("/item/:id",async (request,reponse)=>{
     const itemId = request.params.id;
 
     const item = await Item.findByPk(itemId)
@@ -207,32 +212,32 @@ app.get("item/:id",async (request,reponse)=>{
 //DELETE Item
 app.delete("/item/:id", async (request, reponse)=>{
     const itemId = request.params.id;
-    const item = Item.findByPk(itemId);
-    
-    await Item.destroy(item)
+
+    await Item.destroy({
+        where : {
+            id : itemId
+        }
+    })
     .catch(error=>{console.log(error)});
-})
+    reponse.status(200).json("Item has been deleted")
+});
 
 //POST item 
-app.post("item",async (request,reponse)=>{
-    const modification = request.body;
+app.post("/item",async (request,reponse)=>{
+    const itemBody = request.body;
 
     const item = await Item.create({
-        name : modification.name
+        name : itemBody.name
     })
     .catch(error=>{console.log(error)})
     reponse.status(200).json(item)
-})
+});
 
 //UPDATE Item
-app.put("item",async (request,reponse)=>{
+app.put("/item",async (request,reponse)=>{
     const modification = request.body;
 
-    const item = Item.findAll({
-        where : {
-            id : modification.id
-        }
-    })
+    const item = await Item.findByPk(modification.id)
     .catch(error=>{console.log(error)});
     
     item.name = modification.name;
@@ -240,20 +245,32 @@ app.put("item",async (request,reponse)=>{
     await item.save()
     .catch(error=>{console.log(error)});
 
-    reponse.status(200).json(item + "has been modified")
+    reponse.status(200).json("item has been modified")
 
-})
+});
+
+//Post Item Category
+app.post("/item/category", async (request,reponse)=>{
+    const body = request.body;
+   
+
+    const item = await Item.findByPk(body.itemId);
+
+    const category = await Category.findByPk(body.CategoryId)
+ 
+    item.addCategories(category);
+
+    reponse.status(200).json("category has been had");
+});
 
 //GET Item by category
 app.get("/item/category/:categoryId", async (request , reponse)=>{
     const categoryId = request.params.categoryId;
 
-    const item = await Item.findAll({
-        where : {
-            CategoryId : categoryId
-        }
-    })
-    .catch(error=>{console.log(error)});
+    const category = await Category.findByPk(categoryId);
+
+    const item = await category.getItems();
+
     reponse.status(200).json(item)
 });
 
@@ -266,7 +283,7 @@ app.get("/users",async (request,reponse)=>{
     .catch(error=>{console.log(error)});
 
     reponse.status(200).json(users);
-})
+});
 
 //GET user by id
 
@@ -274,7 +291,7 @@ app.get("/user/:id",async (request,reponse)=>{
     const user = await User.findByPk(request.params.id)
     .catch(error=>{console.log(error)});
     reponse.status(200).json(user);
-})
+});
 
 //Post User SignUp
 app.post("/user/signup", async (request,reponse)=>{
@@ -286,9 +303,9 @@ app.post("/user/signup", async (request,reponse)=>{
     })
     .catch(error=>{console.log(error)});
     reponse.status(200).json(user);
-})
+});
 //Post User SignIn
-app.post("user/signin", async (request,reponse)=>{
+app.post("/user/signin", async (request,reponse)=>{
     const signInForm = request.body;
 
     const user = await User.findOne({
@@ -305,18 +322,14 @@ app.post("user/signin", async (request,reponse)=>{
     }else{
         reponse.status(401).json("Identifiant invalid")
     }
-})
+});
 
 //UPDATE User
 
 app.put("/user", async (request,reponse)=>{
     const modification = request.body;
 
-    const user = await User.findOne({
-        where : {
-            email : modification.email
-        }
-    })
+    const user = await User.findByPk(modification.id)
     .catch(error=>{console.log(error)});
 
     user.email = modification.email;
@@ -325,22 +338,22 @@ app.put("/user", async (request,reponse)=>{
     await user.save()
     .catch(error=>{console.log(error)})
     
-    reponse.status(200).json("User has been modified" + user)
-})
+    reponse.status(200).json("User has been modified")
+});
 
 //Image
 
 //GET Image by id
 app.get("/image/:id", async (request,reponse)=>{
-    const imageId = request.params.categoryId;
+    const imageId = request.params.id;
 
-    const image = await Item.findByPk(imageId)
+    const image = await Image.findByPk(imageId)
     .catch(error=>{console.log(error)});
-
+   
     reponse.status(200).json(image);
 });
 
-//POST Image
+//POST Image 
 app.post("/image", async (request,reponse)=>{
     const imageBody = request.body;
 
@@ -352,8 +365,20 @@ app.post("/image", async (request,reponse)=>{
     .catch(error=>{console.log(error)})
 
     reponse.status(200).json(image)
-})
+});
 
+//POST USER image
+app.post("/user/image", async (request,reponse)=>{
+    const body = request.body;
+    console.log(body)
+    const user = await User.findByPk(body.userId);
+    console.log(user)
+    const image = await Image.findByPk(body.imageId);
+    console.log(image)
+    await user.addImages(image);
+
+    reponse.status(200).json("image has been add to user")
+});
 //GET User image
 app.get("/image/:userId", async (request,reponse)=>{
     const userId = request.params.userId;
@@ -361,12 +386,8 @@ app.get("/image/:userId", async (request,reponse)=>{
     const user = await User.findByPk(userId)
     .catch(error =>{console.log(error)});
 
-    const image = await Image.findAll({
-        where : {
-            id : user.ImageId
-        }
-    });
+    const image = await user.getImages
     reponse.status(200).json(image);
-})
+});
 
 
