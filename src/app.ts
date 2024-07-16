@@ -375,7 +375,7 @@ app.post("/user/image", async (request,reponse)=>{
     console.log(user)
     const image = await Image.findByPk(body.imageId);
     console.log(image)
-    await user.addImages(image);
+    await image.addUser(user);
 
     reponse.status(200).json("image has been add to user")
 });
@@ -389,5 +389,37 @@ app.get("/image/:userId", async (request,reponse)=>{
     const image = await user.getImages
     reponse.status(200).json(image);
 });
-
+//POST Item Image
+app.post("/item/image", async (request, reponse) => {
+    const body = request.body;
+    const item = await Item.findByPk(body.itemId);
+    const image = await Image.findByPk(body.imageId);
+    console.log(image);
+    await image.addItem(item);
+    reponse.status(200).json("image has been add to item");
+});
+//GET Item Image
+app.get("/image/item/:itemId", async (request, reponse) => {
+    const itemId = request.params.itemId;
+    const item = await Item.findByPk(itemId)
+        .catch(error => { console.log(error); });
+    const image = await item.getImages();
+    reponse.status(200).json(image);
+});
+//POST collection Image
+app.post("/collection/image", async (request, reponse) => {
+    const body = request.body;
+    const collection = await Collection.findByPk(body.collectionId);
+    const image = await Image.findByPk(body.imageId);
+    await image.addCollection(collection);
+    reponse.status(200).json("image has been add to collection");
+});
+//GET collection Image
+app.get("/image/collection/:collectionId", async (request, reponse) => {
+    const collectionId = request.params.collectionId;
+    const collection = await Collection.findByPk(collectionId)
+        .catch(error => { console.log(error); });
+    const image = await Image.findByPk(collection.ImageId);
+    reponse.status(200).json(image);
+});
 
