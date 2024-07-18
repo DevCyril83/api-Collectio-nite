@@ -37,7 +37,7 @@ app.post("/collection", async (request, reponse) => {
 //DELETE Collection by id
 app.delete("/collection/:id", async (request, reponse) => {
     const collectionId = request.params.id;
-    const collection = Collection.findByPk(collectionId)
+    const collection = await Collection.findByPk(collectionId)
         .catch(error => { console.log(error); });
     await Collection.destroy({
         where: {
@@ -56,11 +56,10 @@ app.put("/collection", async (request, reponse) => {
     collection.description = modification.description;
     await collection.save()
         .catch(error => { console.log(error); });
-    reponse.json({
+    reponse.status(200).json({
         message: "product has been modified",
         data: collection
-    })
-        .catch(error => { console.log(error); });
+    });
 });
 //GET Collection by id
 app.get("/collection/:id", async (request, reponse) => {
@@ -147,6 +146,22 @@ app.put("/category", async (request, reponse) => {
     reponse.status(200).json("Category :" + category + "has been modified");
 });
 //Item
+//POST collection item
+app.post("/item/collection", async (request, reponse) => {
+    const body = request.body;
+    const collection = await Collection.findByPk(body.collectionId);
+    const item = await Item.findByPk(body.itemId);
+    await item.addCollection(collection);
+    reponse.status(200).json("Item has been add to collection");
+});
+//GET Item by collection
+app.get("/items/collection/:collectionId", async (request, reponse) => {
+    const collectionId = request.params.collectionId;
+    const collection = await Collection.findByPk(collectionId)
+        .catch(error => { console.log(error); });
+    const items = await collection.getItems();
+    reponse.status(200).json(items);
+});
 //GET Items
 app.get("/items", async (request, reponse) => {
     const items = await Item.findAll()
@@ -280,7 +295,9 @@ app.post("/image", async (request, reponse) => {
 //POST USER image
 app.post("/user/image", async (request, reponse) => {
     const body = request.body;
+    console.log(body);
     const user = await User.findByPk(body.userId);
+    console.log(user);
     const image = await Image.findByPk(body.imageId);
     console.log(image);
     await image.addUser(user);
