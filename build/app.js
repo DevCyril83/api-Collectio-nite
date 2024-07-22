@@ -147,10 +147,10 @@ app.put("/category", async (request, reponse) => {
 });
 //Item
 //POST collection item
-app.post("/item/collection", async (request, reponse) => {
+app.post("/item/collection/:collectionID", async (request, reponse) => {
     const body = request.body;
-    const collection = await Collection.findByPk(body.collectionId);
-    const item = await Item.findByPk(body.itemId);
+    const collection = await Collection.findByPk(request.params.collectionID);
+    const item = await Item.create(body);
     await item.addCollection(collection);
     reponse.status(200).json("Item has been add to collection");
 });
