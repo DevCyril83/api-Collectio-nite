@@ -190,18 +190,24 @@ app.put("/category",async (request,reponse)=>{
 //POST collection item
 app.post("/item/collection/:collectionID", async (request, reponse) => {
     const body = request.body;
-    const collection = await Collection.findByPk(request.params.collectionID);
-    const item = await Item.create(body);
-    await item.addCollection(collection);
+    const collection = await Collection.findByPk(request.params.collectionID)
+    .catch(error => { console.log(error) });
+
+    const item = await Item.create(body)
+    .catch(error => { console.log(error) });
+
+    await item.addCollection(collection)
+    .catch(error => { console.log(error) });
     reponse.status(200).json("Item has been add to collection");
 });
 //GET Item by collection
 app.get("/items/collection/:collectionId", async (request, reponse) => {
     const collectionId = request.params.collectionId;
     const collection = await Collection.findByPk(collectionId)
-        .catch(error => { console.log(error); });
+        .catch(error => { console.log(error) });
 
-    const items = await collection.getItems();
+    const items = await collection.getItems()
+    .catch(error => { console.log(error); });
     reponse.status(200).json(items);
 });
 
