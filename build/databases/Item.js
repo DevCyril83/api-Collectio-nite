@@ -9,6 +9,6 @@ const Item = sequelize.define("Item", {
         allowNull: false
     }
 });
-Item.belongsToMany(Category, { through: "Item-category" });
-Category.belongsToMany(Item, { through: "Item-category" });
+Category.hasMany(Item);
+Item.belongsTo(Category);
 module.exports = Item;

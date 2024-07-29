@@ -71,7 +71,7 @@ exports.itemRouter.post("/category", async (request, reponse) => {
     const body = request.body;
     const item = await Item.findByPk(body.itemId);
     const category = await Category.findByPk(body.CategoryId);
-    item.addCategories(category);
+    item.addCategory(category);
     reponse.status(200).json("category has been had");
 });
 //GET Item by category

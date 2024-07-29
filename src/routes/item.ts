@@ -94,7 +94,7 @@ itemRouter.post("/category", async (request,reponse)=>{
 
     const category = await Category.findByPk(body.CategoryId)
  
-    item.addCategories(category);
+    item.addCategory(category);
 
     reponse.status(200).json("category has been had");
 });
@@ -109,3 +109,4 @@ itemRouter.get("/category/:categoryId", async (request , reponse)=>{
 
     reponse.status(200).json(item)
 });
+
