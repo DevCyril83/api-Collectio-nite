@@ -29,6 +29,7 @@ const User = sequelize.define("User",{
     }
 
 });
+
 Collection.belongsToMany(User, {through:"user-collection"});
 User.belongsToMany(Collection, {through:"user-collection"});
 

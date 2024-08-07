@@ -6,7 +6,7 @@ export const collectionRouter = express.Router();
 const Collection = require("../databases/Collection");
 
 
-//GET
+
 collectionRouter.get("/all", async (request, reponse)=>{
     const collections = await Collection.findAll()
     .catch(error=>{console.log(error)});
@@ -47,11 +47,11 @@ collectionRouter.get("/category/:categoryId" , async (request,reponse)=>{
     reponse.status(200).json(collection);
 })
 
-//POST
+
 
 collectionRouter.post("/", async (request,reponse)=>{
     const bodyCollection =  request.body ;
-    console.log(bodyCollection)
+  
     const collection = await Collection.create({
         name : bodyCollection.name,
         description : bodyCollection.description
@@ -61,7 +61,8 @@ collectionRouter.post("/", async (request,reponse)=>{
     reponse.status(200).json(collection)
 });
 
-//Detlete
+
+
 collectionRouter.delete("/:id", async (request,reponse)=>{
     const collectionId = request.params.id;
 
@@ -78,7 +79,7 @@ collectionRouter.delete("/:id", async (request,reponse)=>{
     reponse.status(200).json("collection has been deleted");
 })
 
-//PUT
+
 collectionRouter.put("/", async (request,reponse)=>{
     const modification = request.body;
 
@@ -89,6 +90,7 @@ collectionRouter.put("/", async (request,reponse)=>{
     collection.description = modification.description;
     
     await collection.save()
+    
     .catch(error=>{console.log(error)});
 
     reponse.status(200).json({

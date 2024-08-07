@@ -26,6 +26,4 @@ sequelize.authenticate()
 
 module.exports = sequelize;
 
-
-
 sequelize.sync({ force: false });

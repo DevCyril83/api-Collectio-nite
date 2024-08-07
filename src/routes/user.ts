@@ -8,6 +8,8 @@ const User = require("../databases/User");
 //User
 
 //GET USERS
+
+
 userRouter.get("/all",async (request,reponse)=>{
 
     const users = await User.findAll()
@@ -35,6 +37,7 @@ userRouter.post("/signup", async (request,reponse)=>{
     .catch(error=>{console.log(error)});
     reponse.status(200).json(user);
 });
+
 //Post User SignIn
 userRouter.post("/signin", async (request,reponse)=>{
     const signInForm = request.body;
