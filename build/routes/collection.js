@@ -5,7 +5,6 @@ const sequelize_1 = require("sequelize");
 const express = require("express");
 exports.collectionRouter = express.Router();
 const Collection = require("../databases/Collection");
-//GET
 exports.collectionRouter.get("/all", async (request, reponse) => {
     const collections = await Collection.findAll()
         .catch(error => { console.log(error); });
@@ -37,10 +36,8 @@ exports.collectionRouter.get("/category/:categoryId", async (request, reponse) =
         .catch(error => { console.log(error); });
     reponse.status(200).json(collection);
 });
-//POST
 exports.collectionRouter.post("/", async (request, reponse) => {
     const bodyCollection = request.body;
-    console.log(bodyCollection);
     const collection = await Collection.create({
         name: bodyCollection.name,
         description: bodyCollection.description
@@ -48,7 +45,6 @@ exports.collectionRouter.post("/", async (request, reponse) => {
         .catch(error => { console.log(error); });
     reponse.status(200).json(collection);
 });
-//Detlete
 exports.collectionRouter.delete("/:id", async (request, reponse) => {
     const collectionId = request.params.id;
     const collection = await Collection.findByPk(collectionId)
@@ -61,7 +57,6 @@ exports.collectionRouter.delete("/:id", async (request, reponse) => {
         .catch(error => { console.log(error); });
     reponse.status(200).json("collection has been deleted");
 });
-//PUT
 exports.collectionRouter.put("/", async (request, reponse) => {
     const modification = request.body;
     const collection = await Collection.findByPk(modification.id)
