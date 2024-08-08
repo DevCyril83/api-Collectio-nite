@@ -19,6 +19,7 @@ itemRouter.post("/collection/:collectionID", async (request, reponse) => {
 //GET Item by collection
 itemRouter.get("/all/collection/:collectionId", async (request, reponse) => {
     const collectionId = request.params.collectionId;
+    
     const collection = await Collection.findByPk(collectionId)
         .catch(error => { console.log(error); });
 
